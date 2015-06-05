@@ -5,7 +5,7 @@ var WT = {
 
   count: 0,
 
-  MAX_COUNT: 200, // 200 * 200
+  MAX_COUNT: 200, // 200 * 200 == 40s
 
   observer: null,
 
@@ -21,10 +21,19 @@ var WT = {
     return Array.prototype.slice.call(document.querySelectorAll('[node-type="feed_list_item_date"]'));
   },
 
+  switchTo: function(srcTime) {
+    var beijingTime = moment.tz(srcTime, "Asia/Shanghai");
+    var zurichTime = beijingTime.clone().tz('Europe/Zurich');
+    return zurichTime.format().replace('T', ' ').substr(0, 16);    
+  },
+
   switchTimezone: function(feedList, timeStamps, timezone) {
-    timeStamps.forEach(function(time, index) {
-      time.classList.add('itemdate');
-    });
+    timeStamps.forEach(function(ts, index) {
+      ts.classList.add('itemdate');
+      var srcTime = ts.getAttribute('title');
+      var dstTime = this.switchTo(srcTime);
+      ts.textContent = dstTime;
+    }, this);
   },
 
   mutationHandler: function(mutations) {
@@ -69,6 +78,7 @@ var WT = {
     this.set = this.set.bind(this);
     this.mutationHandler = this.mutationHandler.bind(this);
     this.switchTimezone = this.switchTimezone.bind(this);
+    this.switchTo = this.switchTo.bind(this);
 
     this.reset();    
   }
