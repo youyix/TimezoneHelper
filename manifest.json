@@ -1,0 +1,25 @@
+{ 
+  "manifest_version": 2,
+
+  "name"        : "weiboTimezone Extension",
+  "version"     : "0.1",
+  "description" : "Show timestamp at Weibo.com according to the timezone. 以所在时区显示微博发布的时间",
+  
+  "browser_action": {
+    "default_icon": "share/icon.png",
+    "default_popup": "popup/popup.html"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["http://www.weibo.com/*"],
+      "css": ["logic/test.css"],
+      "js": ["share/jquery-1.11.3.min.js", "logic/test.js"]
+    }
+  ],
+
+  "permissions": [
+    "tabs",
+    "<all_urls>"
+  ]
+} 
