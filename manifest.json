@@ -1,20 +1,26 @@
 { 
   "manifest_version": 2,
 
-  "name"        : "weiboTimezone Extension",
+  "name"        : "新浪微博时区助手 weiboTimezone Extension",
   "version"     : "0.1",
-  "description" : "Show timestamp at Weibo.com according to the timezone. 以所在时区显示微博发布的时间",
+  "description" : "以所在时区显示微博发布的时间。Show timestamps at Weibo.com according to your local timezone. ",
   
   "browser_action": {
     "default_icon": "share/icon.png",
     "default_popup": "popup/popup.html"
   },
 
+  "background": {
+    "persistent":true,
+    "page":"background/background.html"
+  },
+
   "content_scripts": [
     {
-      "matches": ["http://www.weibo.com/*"],
+      "matches": ["http://www.weibo.com/*", "http://www.ghouan.info/*"],
       "css": ["logic/test.css"],
-      "js": ["share/jquery-1.11.3.min.js", "logic/test.js"]
+      "js": ["logic/test.js"],
+      "run_at": "document_start"
     }
   ],
 
@@ -23,3 +29,6 @@
     "<all_urls>"
   ]
 } 
+
+//"share/jquery-1.11.3.min.js", 
+//<script src="../share/jquery-1.11.3.min.js"></script>
