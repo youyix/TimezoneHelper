@@ -17,12 +17,26 @@
       -
       - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
      -->
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="popup.css">
 
+
+
+    <script src="timeData.js"></script>
+    <script src="jquery.min.js"></script>
+
+    <link href="select2.min.css" rel="stylesheet" />
+    <script src="select2.min.js"></script>
+    
     <script src="popup.js"></script>
+
+    
   </head>
   <body>
-    <p>hello</p>
-    <p id="url"></p>
+    <h4>Please choose your timezone: <small id="value"></small></h4>
+    <section>
+      <select id="sel"></select>
+    </section>
   </body>
 </html>
 

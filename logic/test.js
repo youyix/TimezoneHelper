@@ -30,6 +30,27 @@ var WT = {
    */
   config: { childList: true, characterData: true },
 
+  srcTimezone: 'Asia/Shanghai',
+
+  // dstTimezone: 'Asia/Shanghai',
+  dstTimezone: 'Europe/Zurich',
+
+  // get timezone() {
+  //   return this.dstTimezone;
+  // },
+
+  // set timezone(tz) {
+  //   this.dstTimezone = tz;
+  //   this.mutationHandler();
+  // },
+
+  setDstTimezone: function(tz) {
+    console.log('setDstTimezone', tz);
+    this.dstTimezone = tz;
+    this.mutationHandler();
+  },
+
+
   /**
    * TODO
    * 
@@ -46,10 +67,10 @@ var WT = {
 
   switchTo: function(srcTime) {
     var beijingTime = moment.tz(srcTime, "Asia/Shanghai");
-    return beijingTime.clone().tz('Europe/Zurich');
+    return srcTime.clone().tz(this.dstTimezone);
   },
 
-  switchTimezone: function(feedList, timeStamps, timezone) {
+  switchTimezone: function(feedList, timeStamps) {
     timeStamps.forEach(function(ts, index) {
       var originTime = ts.getAttribute('title');
 
@@ -65,6 +86,7 @@ var WT = {
         newTs.setAttribute('target', ts.getAttribute('target'));
         newTs.setAttribute('href', ts.getAttribute('href'));
         newTs.setAttribute('origin-time', originTime);
+        newTs.setAttribute('timezone', this.dstTimezone);
         newTs.setAttribute('title', this.formatTime(dstTime));
         newTs.textContent =  this.formatTime(dstTime);
 
@@ -72,15 +94,18 @@ var WT = {
         newTs.classList = ts.classList;
 
         ts.parentNode.insertBefore(newTs, ts);
-      } 
+      } else if ( newTs.getAttribute('timezone') !== this.dstTimezone ) {
+        newTs.setAttribute('timezone', this.dstTimezone);
+        newTs.setAttribute('title', this.formatTime(dstTime));
+        newTs.textContent =  this.formatTime(dstTime);
+      }
       
     }, this);
   },
 
   mutationHandler: function(mutations) {
     console.log('Mutations observed.', this.feedList);
-    var timezone = 0;
-    this.switchTimezone(this.feedList, this.getAllTimestamps(), timezone);
+    this.switchTimezone(this.feedList, this.getAllTimestamps());
   },
 
   reset: function() {
@@ -133,9 +158,22 @@ for ( var p in WT ) {
 document.addEventListener('DOMContentLoaded', WT.ready.bind(WT));
 
 
+
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  //here we get the new 
-  console.log("\n-- URL CHANGED: " + request.data.url);
-  WT.reset();
+  if (!request || !request.data || !request.data.type) return
+
+  switch ( request.data.type ) {
+    case 'URL_CHANGE': 
+      console.log("\n-- URL CHANGED: " + request.data.value.url);
+      WT.reset();
+      break;
+    case 'TIMEZONE_CHANGE':
+      console.log('Got it', request.data.value.timezone);
+      WT.setDstTimezone(request.data.value.timezone);
+      break;
+    default:
+      console.log('Unknow type.', request.data);
+  }
+  
 });
 
