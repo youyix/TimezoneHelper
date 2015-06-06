@@ -6,7 +6,7 @@
   "description" : "以任意时区显示微博发布的时间，方便在海外使用新浪微博。Show timestamps at Weibo.com according to your local timezone. ",
   
   "browser_action": {
-    "default_icon": "share/icon.png",
+    "default_icon": "static/img/icon.png",
     "default_popup": "popup/popup.html"
   },
 
@@ -18,8 +18,8 @@
   "content_scripts": [
     {
       "matches": ["http://www.weibo.com/*", "http://www.ghouan.info/*"],
-      "css": ["logic/test.css"],
-      "js": ["share/moment-with-locales.min.js", "share/moment-timezone-with-data-2010-2020.min.js", "logic/test.js"],
+      "css": ["logic/client.css"],
+      "js": ["static/js/moment-with-locales.min.js", "static/js/moment-timezone-with-data-2010-2020.min.js", "logic/client.js"],
       "run_at": "document_start"
     }
   ],
