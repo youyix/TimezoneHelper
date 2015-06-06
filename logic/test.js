@@ -1,14 +1,33 @@
+/**
+ *
+ * @author  youyix<youyis2fox@gmail.com>
+ */
+
+
 var WT = {
   feedList: null,
 
+  /**
+   * ....
+   * 
+   * @attribute timer
+   * @type Object
+   * @default null
+   */
   timer: null,
+
+  timeInterval: 200,
 
   count: 0,
 
-  MAX_COUNT: 200, // 200 * 200 == 40s
+  MAX_COUNT: 200,
 
   observer: null,
 
+  /**
+   * @attribute config
+   * @type {Object}
+   */
   config: { childList: true, characterData: true },
 
   /**
@@ -32,14 +51,12 @@ var WT = {
 
   switchTimezone: function(feedList, timeStamps, timezone) {
     timeStamps.forEach(function(ts, index) {
-      
-
       var originTime = ts.getAttribute('title');
 
       var srcTime = moment.tz(originTime, "Asia/Shanghai");
       var dstTime = this.switchTo(srcTime);
 
-      ts.setAttribute('hidden', true)
+      ts.setAttribute('hidden', true);
 
       var newTs = ts.parentNode.querySelector('a[wt-signature=wt]');
       if ( !newTs ) {
@@ -58,11 +75,10 @@ var WT = {
       } 
       
     }, this);
-    console.log('window.location.href', window.location.href);
   },
 
   mutationHandler: function(mutations) {
-    console.log('muuuuuuutaions', this.feedList, mutations);
+    console.log('Mutations observed.', this.feedList);
     var timezone = 0;
     this.switchTimezone(this.feedList, this.getAllTimestamps(), timezone);
   },
@@ -72,10 +88,8 @@ var WT = {
 
     this.count = 0;
     this.timer = null;
-
     if ( this.observer ) this.observer.disconnect();
     this.observer = null;
-
     this.feedList = null;
 
     this.set();
@@ -86,13 +100,14 @@ var WT = {
       console.log('please wait ...');
       this.feedList = document.querySelector('[node-type=feed_list]');
       if ( ! this.feedList && this.count++ < this.MAX_COUNT ) {
-        this.timer = window.setTimeout(this.set, 200); 
+        this.timer = window.setTimeout(this.set, this.timeInterval); 
         return
       }
-      if ( this.count >= this.MAX ) {
+      if ( this.count >= this.MAX_COUNT ) {
         console.log('Not Found');
         return
       } 
+      console.log(this.count, this.MAX_COUNT);
       console.log('Found', this.feedList);
       if ( this.observer ) this.observer.disconnect();
       this.observer = new MutationObserver(this.mutationHandler);
@@ -103,17 +118,16 @@ var WT = {
   },
 
   ready: function() {
-    // TODO: not hardcode
-    this.reset            = this.reset.bind(this);
-    this.set              = this.set.bind(this);
-    this.mutationHandler  = this.mutationHandler.bind(this);
-    this.switchTimezone   = this.switchTimezone.bind(this);
-    this.switchTo         = this.switchTo.bind(this);
-    this.formatTime       = this.formatTime.bind(this);
-
     this.reset();    
   }
 
+}
+// Initiation
+// Alternative: put this inside ready function
+for ( var p in WT ) {
+  if ( WT.hasOwnProperty(p) && typeof(WT[p]) === 'function' ) {
+    WT[p] = WT[p].bind(WT);
+  }
 }
 
 document.addEventListener('DOMContentLoaded', WT.ready.bind(WT));
@@ -121,7 +135,7 @@ document.addEventListener('DOMContentLoaded', WT.ready.bind(WT));
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   //here we get the new 
-  console.log("URL CHANGED: " + request.data.url);
+  console.log("\n-- URL CHANGED: " + request.data.url);
   WT.reset();
 });
 
