@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name"        : "新浪微博时区助手 weiboTimezone Extension",
-  "version"     : "0.1.2",
+  "version"     : "0.1.4",
   "description" : "以所在时区显示微博发布的时间。Show timestamps at Weibo.com according to your local timezone. ",
   
   "browser_action": {
