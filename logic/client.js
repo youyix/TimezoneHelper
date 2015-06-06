@@ -76,7 +76,8 @@ var WT = {
         newTs.setAttribute('target', ts.getAttribute('target'));
         newTs.setAttribute('href', ts.getAttribute('href'));
         newTs.setAttribute('origin-time', originTime);
-        newTs.setAttribute('timezone', this.dstTimezone);
+        newTs.setAttribute('srctimezone', this.srcTimezone);
+        newTs.setAttribute('dsttimezone', this.dstTimezone);
         newTs.setAttribute('title', this.formatTime(dstTime));
         newTs.textContent =  this.formatTime(dstTime);
 
@@ -84,8 +85,9 @@ var WT = {
         newTs.classList = ts.classList;
 
         ts.parentNode.insertBefore(newTs, ts);
-      } else if ( newTs.getAttribute('timezone') !== this.dstTimezone ) {
-        newTs.setAttribute('timezone', this.dstTimezone);
+
+      } else if ( newTs.getAttribute('dsttimezone') !== this.dstTimezone ) {
+        newTs.setAttribute('dsttimezone', this.dstTimezone);
         newTs.setAttribute('title', this.formatTime(dstTime));
         newTs.textContent =  this.formatTime(dstTime);
       }
@@ -133,7 +135,10 @@ var WT = {
   },
 
   ready: function() {
-    this.reset();    
+    chrome.storage.sync.get('timezone', function(items){
+      if ( items ) WT.dstTimezone = items.timezone;
+      WT.reset();
+    })
   }
 
 }
@@ -146,8 +151,6 @@ for ( var p in WT ) {
 }
 
 document.addEventListener('DOMContentLoaded', WT.ready.bind(WT));
-
-
 
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (!request || !request.data || !request.data.type) return
@@ -164,6 +167,5 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     default:
       console.log('Unknow type.', request.data);
   }
-  
 });
 
