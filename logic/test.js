@@ -11,6 +11,10 @@ var WT = {
 
   config: { attributes: true, childList: true, characterData: true },
 
+  isInPernalPage: function() {
+    return window.location.href.indexOf('/u/') > 0;
+  },
+
   /**
    * TODO
    * 
@@ -21,19 +25,82 @@ var WT = {
     return Array.prototype.slice.call(document.querySelectorAll('[node-type="feed_list_item_date"]'));
   },
 
+  formatTime: function(time) {
+    return time.format().replace('T', ' ').substr(0, 16);
+  },
+
   switchTo: function(srcTime) {
     var beijingTime = moment.tz(srcTime, "Asia/Shanghai");
-    var zurichTime = beijingTime.clone().tz('Europe/Zurich');
-    return zurichTime.format().replace('T', ' ').substr(0, 16);    
+    return beijingTime.clone().tz('Europe/Zurich');
+  },
+
+  // sina's inconsistency
+  getFakeTime: function(srcTime, dstTime) {
+    var fake = srcTime.clone();
+    var diff = srcTime._offset - dstTime._offset;
+
+    fake.subtract(diff, 'minutes');
+
+    return fake
+  },
+
+  timeObservers: [],
+
+  timeCorrecter: function(mutaions) {
+    this.timeObservers.forEach(function(observer, index){
+      observer.disconnect();
+    });
+
+    console.log('timeCorrecter', mutaions);
+
+    var target = mutaions[0].target;
+
+    var originTime = target.getAttribute('title');
+
+
+    target.textContent = originTime;
+
+    var timeStamps = this.getAllTimestamps();
+    for ( var i=0; i<1; i++) {
+      this.timeObservers[i].observe(timeStamps[i], { attributes: false, childList: true, characterData: true });
+    }
+
   },
 
   switchTimezone: function(feedList, timeStamps, timezone) {
     timeStamps.forEach(function(ts, index) {
       ts.classList.add('itemdate');
-      var srcTime = ts.getAttribute('title');
+
+      var originTime = ts.getAttribute('title');
+
+      var srcTime = moment.tz(originTime, "Asia/Shanghai");
       var dstTime = this.switchTo(srcTime);
-      ts.textContent = dstTime;
+
+      // ts.setAttribute('wt-origin-time', originTime);
+
+      ts.textContent = this.formatTime(dstTime);
+
+      for ( var i=0; i<1; i++) {
+        console.log('gogo');
+        this.timeObservers[i] = new MutationObserver(this.timeCorrecter);
+        this.timeObservers[i].observe(timeStamps[i], { attributes: false, childList: true, characterData: true });
+      }
+
+      // if ( this.isInPernalPage() ) {
+      //   ts.textContent = this.formatTime(dstTime);
+      // } else {
+      //   var fake = this.getFakeTime(srcTime, dstTime);
+      //   // console.log('wocao', ts.getAttribute('date'), fake.unix(), fake.unix() < ts.getAttribute('date'));
+      //   ts.textContent = this.formatTime(fake);
+      //   // ts.setAttribute('title', this.formatTime(fake));
+      //   ts.setAttribute('date', fake.unix()); 
+      //   console.log('fake:', fake, fake.format());
+      //   console.log('src:', srcTime, srcTime.format());
+      //   console.log('dst:', dstTime, dstTime.format());
+
+      // }
     }, this);
+    console.log('window.location.href', window.location.href);
   },
 
   mutationHandler: function(mutations) {
@@ -44,6 +111,11 @@ var WT = {
 
   reset: function() {
     console.log('-- reset --\n');
+    this.timeObservers.forEach(function(observer, index){
+      observer.disconnect();
+      observer = null;
+    });
+    this.timeObservers = [];
     this.count = 0;
     this.timer = null;
 
@@ -74,11 +146,16 @@ var WT = {
   },
 
   ready: function() {
-    this.reset = this.reset.bind(this);
-    this.set = this.set.bind(this);
-    this.mutationHandler = this.mutationHandler.bind(this);
-    this.switchTimezone = this.switchTimezone.bind(this);
-    this.switchTo = this.switchTo.bind(this);
+    // TODO: not hardcode
+    this.reset            = this.reset.bind(this);
+    this.set              = this.set.bind(this);
+    this.mutationHandler  = this.mutationHandler.bind(this);
+    this.switchTimezone   = this.switchTimezone.bind(this);
+    this.switchTo         = this.switchTo.bind(this);
+    this.isInPernalPage   = this.isInPernalPage.bind(this);
+    this.getFakeTime      = this.getFakeTime.bind(this);
+    this.formatTime       = this.formatTime.bind(this);
+    this.timeCorrecter    = this.timeCorrecter.bind(this);
 
     this.reset();    
   }
