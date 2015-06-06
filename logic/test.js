@@ -26,23 +26,13 @@ var WT = {
 
   /**
    * @attribute config
-   * @type {Object}
+   * @type Object
    */
   config: { childList: true, characterData: true },
 
   srcTimezone: 'Asia/Shanghai',
 
-  // dstTimezone: 'Asia/Shanghai',
-  dstTimezone: 'Europe/Zurich',
-
-  // get timezone() {
-  //   return this.dstTimezone;
-  // },
-
-  // set timezone(tz) {
-  //   this.dstTimezone = tz;
-  //   this.mutationHandler();
-  // },
+  dstTimezone: 'Asia/Shanghai',
 
   setDstTimezone: function(tz) {
     console.log('setDstTimezone', tz);
@@ -52,7 +42,7 @@ var WT = {
 
 
   /**
-   * TODO
+   * ....
    * 
    * @method  getAllTimestamps
    * @return array array of timestamps
@@ -147,7 +137,7 @@ var WT = {
   }
 
 }
-// Initiation
+
 // Alternative: put this inside ready function
 for ( var p in WT ) {
   if ( WT.hasOwnProperty(p) && typeof(WT[p]) === 'function' ) {
