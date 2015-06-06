@@ -1,5 +1,5 @@
 /**
- * @author  youyix<youyis2fox@gmail.com>
+ * @author  Zhenfei Nie<youyis2fox@gmail.com>
  */
 
 var timezoneChanged = function(event) {
