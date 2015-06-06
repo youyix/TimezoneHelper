@@ -55,17 +55,12 @@ var WT = {
     return time.format().replace('T', ' ').substr(0, 16);
   },
 
-  switchTo: function(srcTime) {
-    var beijingTime = moment.tz(srcTime, "Asia/Shanghai");
-    return srcTime.clone().tz(this.dstTimezone);
-  },
-
   switchTimezone: function(feedList, timeStamps) {
     timeStamps.forEach(function(ts, index) {
       var originTime = ts.getAttribute('title');
 
-      var srcTime = moment.tz(originTime, "Asia/Shanghai");
-      var dstTime = this.switchTo(srcTime);
+      var srcTime = moment.tz(originTime, this.srcTimezone);
+      var dstTime = srcTime.clone().tz(this.dstTimezone);
 
       ts.setAttribute('hidden', true);
 
