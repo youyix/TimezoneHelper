@@ -44,61 +44,34 @@ var WT = {
     return fake
   },
 
-  timeObservers: [],
-
-  timeCorrecter: function(mutaions) {
-    this.timeObservers.forEach(function(observer, index){
-      observer.disconnect();
-    });
-
-    console.log('timeCorrecter', mutaions);
-
-    var target = mutaions[0].target;
-
-    var originTime = target.getAttribute('title');
-
-
-    target.textContent = originTime;
-
-    var timeStamps = this.getAllTimestamps();
-    for ( var i=0; i<1; i++) {
-      this.timeObservers[i].observe(timeStamps[i], { attributes: false, childList: true, characterData: true });
-    }
-
-  },
 
   switchTimezone: function(feedList, timeStamps, timezone) {
     timeStamps.forEach(function(ts, index) {
-      ts.classList.add('itemdate');
+      
 
       var originTime = ts.getAttribute('title');
 
       var srcTime = moment.tz(originTime, "Asia/Shanghai");
       var dstTime = this.switchTo(srcTime);
 
-      // ts.setAttribute('wt-origin-time', originTime);
+      ts.setAttribute('hidden', true)
 
-      ts.textContent = this.formatTime(dstTime);
+      var newTs = ts.parentNode.querySelector('a[wt-signature=wt]');
+      if ( !newTs ) {
+        newTs = document.createElement('a');
+        newTs.setAttribute('wt-signature', 'wt');
+        newTs.setAttribute('target', ts.getAttribute('target'));
+        newTs.setAttribute('href', ts.getAttribute('href'));
+        newTs.setAttribute('origin-time', originTime);
+        newTs.setAttribute('title', this.formatTime(dstTime));
+        newTs.textContent =  this.formatTime(dstTime);
 
-      for ( var i=0; i<1; i++) {
-        console.log('gogo');
-        this.timeObservers[i] = new MutationObserver(this.timeCorrecter);
-        this.timeObservers[i].observe(timeStamps[i], { attributes: false, childList: true, characterData: true });
-      }
+        newTs.classList.add('itemdate');
+        newTs.classList = ts.classList;
 
-      // if ( this.isInPernalPage() ) {
-      //   ts.textContent = this.formatTime(dstTime);
-      // } else {
-      //   var fake = this.getFakeTime(srcTime, dstTime);
-      //   // console.log('wocao', ts.getAttribute('date'), fake.unix(), fake.unix() < ts.getAttribute('date'));
-      //   ts.textContent = this.formatTime(fake);
-      //   // ts.setAttribute('title', this.formatTime(fake));
-      //   ts.setAttribute('date', fake.unix()); 
-      //   console.log('fake:', fake, fake.format());
-      //   console.log('src:', srcTime, srcTime.format());
-      //   console.log('dst:', dstTime, dstTime.format());
-
-      // }
+        ts.parentNode.insertBefore(newTs, ts);
+      } 
+      
     }, this);
     console.log('window.location.href', window.location.href);
   },
@@ -111,11 +84,7 @@ var WT = {
 
   reset: function() {
     console.log('-- reset --\n');
-    this.timeObservers.forEach(function(observer, index){
-      observer.disconnect();
-      observer = null;
-    });
-    this.timeObservers = [];
+
     this.count = 0;
     this.timer = null;
 
@@ -155,7 +124,6 @@ var WT = {
     this.isInPernalPage   = this.isInPernalPage.bind(this);
     this.getFakeTime      = this.getFakeTime.bind(this);
     this.formatTime       = this.formatTime.bind(this);
-    this.timeCorrecter    = this.timeCorrecter.bind(this);
 
     this.reset();    
   }
