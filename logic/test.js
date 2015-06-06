@@ -9,11 +9,7 @@ var WT = {
 
   observer: null,
 
-  config: { attributes: true, childList: true, characterData: true },
-
-  isInPernalPage: function() {
-    return window.location.href.indexOf('/u/') > 0;
-  },
+  config: { childList: true, characterData: true },
 
   /**
    * TODO
@@ -33,17 +29,6 @@ var WT = {
     var beijingTime = moment.tz(srcTime, "Asia/Shanghai");
     return beijingTime.clone().tz('Europe/Zurich');
   },
-
-  // sina's inconsistency
-  getFakeTime: function(srcTime, dstTime) {
-    var fake = srcTime.clone();
-    var diff = srcTime._offset - dstTime._offset;
-
-    fake.subtract(diff, 'minutes');
-
-    return fake
-  },
-
 
   switchTimezone: function(feedList, timeStamps, timezone) {
     timeStamps.forEach(function(ts, index) {
@@ -77,7 +62,7 @@ var WT = {
   },
 
   mutationHandler: function(mutations) {
-    console.log('muuuuuuutaions', this.feedList);
+    console.log('muuuuuuutaions', this.feedList, mutations);
     var timezone = 0;
     this.switchTimezone(this.feedList, this.getAllTimestamps(), timezone);
   },
@@ -103,14 +88,17 @@ var WT = {
       if ( ! this.feedList && this.count++ < this.MAX_COUNT ) {
         this.timer = window.setTimeout(this.set, 200); 
         return
+      }
+      if ( this.count >= this.MAX ) {
+        console.log('Not Found');
+        return
       } 
-      this.count = 0;
       console.log('Found', this.feedList);
-
       if ( this.observer ) this.observer.disconnect();
       this.observer = new MutationObserver(this.mutationHandler);
       this.observer.observe(this.feedList, this.config);
       this.mutationHandler();
+      
     }
   },
 
@@ -121,8 +109,6 @@ var WT = {
     this.mutationHandler  = this.mutationHandler.bind(this);
     this.switchTimezone   = this.switchTimezone.bind(this);
     this.switchTo         = this.switchTo.bind(this);
-    this.isInPernalPage   = this.isInPernalPage.bind(this);
-    this.getFakeTime      = this.getFakeTime.bind(this);
     this.formatTime       = this.formatTime.bind(this);
 
     this.reset();    
