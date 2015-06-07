@@ -17,7 +17,7 @@
 
   "content_scripts": [
     {
-      "matches": ["http://www.weibo.com/*", "http://www.ghouan.info/*"],
+      "matches": ["http://www.weibo.com/*"],
       "css": ["logic/client.css", "static/css/bootstrap.min.css"],
       "js": [
         "static/js/moment-with-locales.min.js", 
@@ -31,7 +31,7 @@
 
   "permissions": [
     "tabs",
-    "<all_urls>",
+    "http://www.weibo.com/*",
     "storage"
   ]
 } 
