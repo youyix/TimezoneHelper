@@ -6,3 +6,7 @@ section {
 section > select {
   width: 100%;
 }
+
+small {
+  display: inline-block;
+}
