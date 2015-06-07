@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name"        : "新浪微博时区助手 Timezone Helper for Weibo.com",
-  "version"     : "0.2.2",
+  "version"     : "0.2.3",
   "author"      : "Zhenfei Nie<youyis2fox@gmail.com>",
   "description" : "以任意时区显示微博发布的时间，方便在海外使用新浪微博。Show timestamps at Weibo.com according to your local timezone. ",
   "short_name"  : "请选择时区/Please choose a timezone",
