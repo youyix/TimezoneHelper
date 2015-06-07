@@ -18,8 +18,13 @@
   "content_scripts": [
     {
       "matches": ["http://www.weibo.com/*", "http://www.ghouan.info/*"],
-      "css": ["logic/client.css"],
-      "js": ["static/js/moment-with-locales.min.js", "static/js/moment-timezone-with-data-2010-2020.min.js", "logic/client.js"],
+      "css": ["logic/client.css", "static/css/bootstrap.min.css"],
+      "js": [
+        "static/js/moment-with-locales.min.js", 
+        "static/js/moment-timezone-with-data-2010-2020.min.js", 
+        "static/js/jquery.min.js",
+        "static/js/bootstrap.min.js",
+        "logic/client.js"],
       "run_at": "document_start"
     }
   ],

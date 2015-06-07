@@ -73,7 +73,7 @@ var WT = {
         newTs.setAttribute('origin-time', originTime);
         newTs.setAttribute('srctimezone', this.srcTimezone);
         newTs.setAttribute('dsttimezone', this.dstTimezone);
-        newTs.setAttribute('title', this.formatTime(dstTime));
+        newTs.setAttribute('dsttime', this.formatTime(dstTime));
         newTs.textContent =  this.formatTime(dstTime);
 
         newTs.classList.add('itemdate');
@@ -81,10 +81,22 @@ var WT = {
 
         ts.parentNode.insertBefore(newTs, ts);
 
+        newTs.setAttribute('data-toggle', 'tooltip');
+        newTs.setAttribute('data-placement', 'right')
+        $(newTs).tooltip({
+          'title': 'Beijing: ' + originTime,
+        });
+
+        
+
       } else if ( newTs.getAttribute('dsttimezone') !== this.dstTimezone ) {
         newTs.setAttribute('dsttimezone', this.dstTimezone);
-        newTs.setAttribute('title', this.formatTime(dstTime));
+        newTs.setAttribute('dsttime', this.formatTime(dstTime));
         newTs.textContent =  this.formatTime(dstTime);
+
+        $(newTs).tooltip({
+          'title': 'Beijing: ' + originTime,
+        });
       }
       
     }, this);
