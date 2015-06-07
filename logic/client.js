@@ -76,7 +76,7 @@ var WT = {
         newTs.setAttribute('dsttime', this.formatTime(dstTime));
         newTs.textContent =  this.formatTime(dstTime);
 
-        newTs.classList.add('itemdate');
+        newTs.classList.add('bg-success');
         newTs.classList = ts.classList;
 
         ts.parentNode.insertBefore(newTs, ts);
