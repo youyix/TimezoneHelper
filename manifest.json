@@ -11,7 +11,7 @@
   },
 
   "background": {
-    "persistent":true,
+    "persistent": false,
     "page":"background/background.html"
   },
 
