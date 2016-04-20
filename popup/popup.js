@@ -18,7 +18,7 @@ var timezoneChanged = function(event) {
     }
   }
 
-  chrome.tabs.query({url: "http://www.weibo.com/*"}, function(tabs) {
+  chrome.tabs.query({url: "http://*.weibo.com/*"}, function(tabs) {
     tabs.forEach(function(tab, i){
       console.log(tab.id, tab.url, data.value);
       chrome.tabs.sendMessage(tab.id, {data: data}, function(response) {

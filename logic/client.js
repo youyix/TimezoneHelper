@@ -122,7 +122,7 @@
             );
         } else if (node.getAttribute('dst-timezone') !== dstTimezone)  {
             node.setAttribute('dst-timezone', dstTimezone);
-            node.setAttribute('dst-time', formatTime(dstTime));
+            node.setAttribute('dst-time', formatTime(dstTimeObj));
             node.textContent = dstTime;
 
             setTooltip(node, {'title': 'Beijing:' + originTime});
