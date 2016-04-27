@@ -1,12 +1,4 @@
-section {
-  width: 400px;
-  height: 275px;
-}
-
-section > select {
-  width: 100%;
-}
-
-small {
-  display: inline-block;
+vaadin-combo-box {
+    width: 400px;
+    height: 400px;
 }

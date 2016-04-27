@@ -1,0 +1,17 @@
+{
+  "name": "weiboTimezone",
+  "version": "0.2.3",
+  "homepage": "https://github.com/youyix/TimezoneHelper",
+  "authors": [
+    "Zhenfei Nie <youyis2fox@gmail.com>"
+  ],
+  "description": "Timezone helper for Weibo.com",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

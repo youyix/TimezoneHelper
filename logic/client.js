@@ -46,6 +46,10 @@
 
     var dstTimezone = 'Asia/Shanghai';
 
+    var isUndefinedOrNull = function(obj) {
+        return typeof obj === 'undefined' || obj === null;
+    };
+
     var formatTime = function(time) {
         return time.format().replace('T', ' ').substr(0, 16);
     };
@@ -88,6 +92,9 @@
     }
 
     var setAttributes = function(node, attrs) {
+        if ([node, attrs].some(isUndefinedOrNull)) {
+            return;
+        }
         Object.keys(attrs).forEach(function(key) {
             node.setAttribute(key, attrs[key]);
         });
